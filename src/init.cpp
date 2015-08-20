@@ -293,7 +293,7 @@ std::string HelpMessage(HelpMessageMode mode)
 #ifndef WIN32
     strUsage += HelpMessageOpt("-pid=<file>", strprintf(_("Specify pid file (default: %s)"), "bitcoind.pid"));
 #endif
-    strUsage += HelpMessageOpt("-prune=<n>", strprintf(_("Reduce storage requirements by pruning (deleting) old blocks. This mode disables wallet support and is incompatible with -txindex. "
+    strUsage += HelpMessageOpt("-prune=<n>", strprintf(_("Reduce storage requirements by pruning (deleting) old blocks. This mode is incompatible with -txindex. "
             "Warning: Reverting this setting requires re-downloading the entire blockchain. "
             "(default: 0 = disable pruning blocks, >%u = target size in MiB to use for block files)"), MIN_DISK_SPACE_FOR_BLOCK_FILES / 1024 / 1024));
     strUsage += HelpMessageOpt("-reindex", _("Rebuild block chain index from current blk000??.dat files on startup"));
@@ -373,7 +373,7 @@ std::string HelpMessage(HelpMessageMode mode)
         strUsage += HelpMessageOpt("-flushwallet", strprintf("Run a thread to flush wallet periodically (default: %u)", 1));
         strUsage += HelpMessageOpt("-stopafterblockimport", strprintf("Stop running after importing blocks from disk (default: %u)", 0));
     }
-    string debugCategories = "addrman, alert, bench, coindb, db, lock, rand, rpc, selectcoins, mempool, net, proxy, prune"; // Don't translate these and qt below
+    string debugCategories = "addrman, alert, bench, coindb, db, lock, rand, rpc, selectcoins, mempool, mempoolrej, net, proxy, prune"; // Don't translate these and qt below
     if (mode == HMM_BITCOIN_QT)
         debugCategories += ", qt";
     strUsage += HelpMessageOpt("-debug=<category>", strprintf(_("Output debugging information (default: %u, supplying <category> is optional)"), 0) + ". " +
@@ -1228,7 +1228,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                 // Check for changed -prune state.  What we are concerned about is a user who has pruned blocks
                 // in the past, but is now trying to run unpruned.
                 if (fHavePruned && !fPruneMode) {
-                    strLoadError = _("You need to rebuild the database using -reindex to go back to unpruned mode.  This will redownload the entire blockchain");
+                    strLoadError = _("You need to rebuild the database using -reindex to go back to unpruned mode. This will redownload the entire blockchain");
                     break;
                 }
 
